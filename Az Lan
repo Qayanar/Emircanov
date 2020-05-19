@@ -1,0 +1,99 @@
+<?php 
+//  Login.php start
+define("_ENTER","Daxil ol");
+define("_STUDENT","Şagird");
+define("_TEACHER","Müəllim");
+define("_PARENT","Valideyn");
+define("_LIKE","- kimi -");
+define("_USERNAME","İstifadəçi adı");
+define("_PASSWORD","Şifrə");
+define("_NTM","Nicat Təhsil Mərkəzi");
+define("_ERROR","Xəta !");
+define("_ERRORCNTRY","Ölkə xətası!");
+define("_ERRORCITYTEXT","Ermənistandan giriş edilə bilməz.");
+define("_EMPTY","İstifadəçi adı vəya şifrə boşdur.");
+define("_SAYIN","Hörmətli");
+define("_DISABLE","Sizin hesabınız deaktivdir.");
+define("_NOTFOUND","Məlumat tapılmadı.");
+define("_CLOSE", "Bağla");
+define("_OK", "Anladım");	
+define("_CHOOSEONE", "Birini seçin");
+define("_ABITURIYENT", "Abituriyent");
+define("_DIGER", "Digər");
+define("_WELCOME", "Xoş gəldiniz");
+define("_LOGOUT", "Çıxmaq istədiyinizdən əminsiniz?");
+define("_YES", "Bəli");
+define("_NO", "Xeyr");
+// Login.php end here
+// Languages start
+define("_AZ", "Azərbaycanca");
+define("_TR", "Türkcə");
+define("_EN", "İngiliscə");
+define("_RU", "Rusca");
+define("_SA", "Ərəbcə");
+
+
+// device start
+define("_DEVICEINFO", "Cihaz məlumatlarım");
+define("_DEVICENAME", "Cihaz Adı");
+define("_MYCOUNTRY", "Ölkəm");
+define("_PHONE", "Mobil telefon");
+define("_COMPUTER", "Komputer");
+define("_SOFT", "Soft ünvanım");
+define("_CITY", "Şəhər");
+define("_IP", "İP ünvanım");
+
+// device end
+
+
+// COMMON TRANSLATE
+
+define("_ABOUT","Haqqında");
+define("_TELEFON","Telefon");
+define("_UNVAN","Ünvan");
+define("_SEX","Cinsi");
+define("_VIEWPRO","Profilinə bax");
+define("_LESSON","Dərsi");
+define("_JOB","Vəzifə");
+define("_LOADING","Yüklənir");
+define("_WEATHERINFO","Hava Haqqında");
+define("_PROFILE","Hesabım");
+define("_BIRTHDAY", "Doğum günü");
+define("_PERSON", "nəfər");
+define("_LASTVISIT", "Son giriş tarixi");
+define("_REGTIME", "Qeydiyyat tarixi");
+define("_NAME", "Ad");
+define("_SURNAME", "Soyad");
+define("_MIDDLE", "Ata adı");
+define("_EMAIL", "E-Poçt");
+define("_GENDER", "Cinsi");
+// define("_ABOUT","Haqqında");
+// define("_ABOUT","Haqqında");
+// define("_ABOUT","Haqqında");
+// define("_ABOUT","Haqqında");
+// define("_ABOUT","Haqqında");
+// define("_ABOUT","Haqqında");
+
+// COMMON
+
+// Menus start
+define("_HOME","Ana Səhifə");
+define("_NOTIFY","Bildirişlər");
+define("_LESSONS","Dərslər");
+define("_RESULT","İmtahan nəticələri");
+define("_EXIT","Çıxış");
+define("_CONFIG","Tənzimləmələr");
+define("_MYDEVICE","Cihazım");
+define("_MYCHILD", "Övladım");
+define("_EXTRAS","Əlavələr");
+define("_STUDENTS", "Şagirdlər");
+define("_TEACHERS", "Müəllimlər");
+define("_PARENTS", "Valideynlər");
+define("_TODAYBIRTH", "Bu gün doğulanlar");
+define("_NEW", "Yeni");
+define("_LANGS", "Dillər");
+define("_TODAY", "Tarixdə bu gün");
+// Menus end here
+
+
+ ?>
