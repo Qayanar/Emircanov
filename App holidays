@@ -1,0 +1,73 @@
+<?php 
+
+    function observed_date($holiday){
+
+    $day = date("w", strtotime($holiday));
+    if($day == 6) {
+        $observed_date = $holiday -1;
+    } elseif ($day == 0) {
+        $observed_date = $holiday +1;
+    } else {
+        $observed_date = $holiday;
+    }
+    return $observed_date;
+}
+
+function bayramlar($holiday_name) {
+date_default_timezone_set("Asia/Baku");
+    $currentYear = date('Y');
+
+    switch ($holiday_name) {
+        // hemreylik gunu
+        case "hemreylik":
+            $holiday = observed_date(date('dmY', strtotime("31 december $currentYear")));
+            break;
+        // bayraq gunu
+        case "bayrag_gunu":
+            $holiday = observed_date(date('dmY', strtotime("9 november $currentYear")));
+            break;
+        // 8 mart
+        case "qadinlar":
+            $holiday = observed_date(date('dmY', strtotime("8 march $currentYear")));
+            break;
+        // 20 yanvar faciesi
+        case "20_yanvar":
+            $holiday = observed_date(date('dmY', strtotime("20 january $currentYear")));
+            break;
+        // Independence Day
+        case "independence_day":
+            $holiday = observed_date(date('Ymd', strtotime("july 4 $currentYear")));
+            break;
+        // Labor Day
+        case "bilik_gunu":
+            $holiday = $holiday = observed_date(date('dmY', strtotime("15 september $currentYear")));
+            break;
+        // Columbus Day
+        case "columbus_day":
+            $holiday = date('Ymd', strtotime("october $currentYear second monday"));
+            break;
+        // Veteran's Day
+        case "veterans_day":
+            $holiday = observed_date(date('Ymd', strtotime("november 11 $currentYear")));
+            break;
+        // Thanksgiving Day
+        case "thanksgiving_day":
+            $holiday = date('Ymd', strtotime("november $currentYear fourth thursday"));
+            break;
+        // Christmas Day
+        case "christmas_day":
+            $holiday = observed_date(date('Ymd', strtotime("december 25 $currentYear")));
+            break;
+
+        default:
+            $holiday = "";
+            break;
+    }
+    return $holiday;
+
+}
+
+
+    echo bayramlar('hemreylik');
+
+ ?>
