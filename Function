@@ -1,0 +1,530 @@
+<?php 
+    
+// class Main{
+
+    function ip_list(){
+        include('db.php');
+        $list = 'SELECT ip_address FROM ip_filter WHERE ip_status=1';
+        $runl = mysqli_query($baglan,$list);
+        $black = ['2.56.204.0'];
+        while ($block_list = @mysqli_fetch_array($runl)) {
+            array_push($black,$block_list['ip_address']);
+        }
+        return $black;
+        
+    }
+
+    function yash_hesabla($tarix){
+    $birthDate = explode("-", $tarix);
+  //yaş və tarix
+    $age = (date("md", date("U", mktime(0, 0, 0, $birthDate[1], $birthDate[2], $birthDate[0]))) > date("md")
+    ? ((date("Y") - $birthDate[0]) - 1) : (date("Y") - $birthDate[0]));
+    return $age;
+    }
+
+    function today_birthday(){
+        include('db.php');
+        $birth = "SELECT * FROM users WHERE MONTH(birthday)=MONTH(CURDATE()) AND DAY(birthday)=DAY(CURDATE())";
+        $birthrun = mysqli_query($baglan,$birth);
+        $say = mysqli_num_rows($birthrun);
+        return $say;
+    }
+    function ehval(){
+        include('db.php');
+        $mood = 'SELECT * FROM student_mood WHERE mood_status=1';
+        $moodr = mysqli_query($baglan,$mood);
+        $counts = mysqli_num_rows($moodr);
+        while ($row = mysqli_fetch_assoc($moodr)){
+            $sum += $row['mood'];
+        }
+        return round($sum/$counts);
+    }
+
+    function ara($bas, $son,$yazi){
+    @preg_match_all('/' .preg_quote($bas,'/').'(.*?)'.preg_quote($son,'/').'/i', $yazi, $m);
+    return $m[1];
+    }
+
+    function hava(){
+        $url = @file_get_contents('https://weather.day.az/az/city/100587084/today.html');
+        @preg_match_all('@<p class="degree">(.*?)</p>@si', $url, $res);
+        if(!$url){ return 'Şəbəkə Xətası';}
+        return $res[0][0];
+    }
+
+
+    function havaicon(){ 
+      include('db.php');
+      $link = 'https://azertag.az/';
+      $icerik = @file_get_contents($link);
+      $pul = ara('<div class="cloudly-icon">','</div>',$icerik);
+      $ran = explode("=", $pul[0]);
+      $resim = rtrim($ran[2],">");
+      $yeni = explode("\"", $resim);
+      $ikonu = explode("/",$yeni[1]);
+      if(!$icerik){ return '<i class="fa fa-wifi fa-1x"></i>';}
+      return "<img width='80px' style='' src='".$url."assets/".$ikonu[1]."/".$ikonu[2]."/".$ikonu[3]."'>";  
+    }
+
+    function yeni(){
+        $link = 'https://azertag.az/hava-melumati';
+        $ic = file_get_contents($link);
+        $ici = ara('<blitzer>','</blitzer>',$ic);
+        return $ici;
+    }
+
+	function go($url, $time = 0){
+    if ($time) header('Refresh: {$time}; url={$url}');
+    else header('Location: {$url}');
+    }
+
+    function filter($str){
+      return htmlspecialchars(trim($str));
+    }
+
+    function get($name){
+      if(isset($_GET[$name])){
+        if (is_array($_GET[$name])){
+          return array_map(function($item){
+            return filter($item);
+          }, $_GET[$name]);
+        }
+
+        return filter($_GET[$name]);
+
+      }
+      return false;
+    }
+
+    function settings($par){
+        include('db.php');
+        $set  = 'SELECT * FROM system_config';
+        $setr = mysqli_query($baglan,$set);
+        $bb   = mysqli_fetch_array($setr);
+        return $bb[$par];
+    }
+
+    function ip_info($par,$key){
+        $result  = @file_get_contents('http://ip-api.com/json/'.$par.'');
+        $result  = (array) json_decode($result);
+        return $result[$key];
+    }
+
+    function post($name){
+      if(isset($_POST[$name])){
+        if (is_array($_POST[$name])){
+          return array_map(function($item){
+            return filter($item);
+          }, $_POST[$name]);
+        }
+        return filter($_POST[$name]);
+      }
+      return false;
+    }
+
+    function seo($str, $options = array())
+    {
+        $str = mb_convert_encoding((string)$str, 'UTF-8', mb_list_encodings());
+        $defaults = array(
+            'delimiter' => '-',
+            'limit' => null,
+            'lowercase' => true,
+            'replacements' => array(),
+            'transliterate' => true
+        );
+        $options = array_merge($defaults, $options);
+        $char_map = array(
+            // Latin
+            'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C', 'Ə' => 'E',
+            'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I',
+            'Ð' => 'D', 'Ñ' => 'N', 'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ő' => 'O',
+            'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U', 'Ű' => 'U', 'Ý' => 'Y', 'Þ' => 'TH',
+            'ß' => 'ss',
+            'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'ae', 'ç' => 'c',
+            'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
+            'ð' => 'd', 'ñ' => 'n', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ő' => 'o',
+            'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
+            'ÿ' => 'y', 'ə' => 'e',
+            // Latin symbols
+            '©' => '(c)',
+            // Greek
+            'Α' => 'A', 'Β' => 'B', 'Γ' => 'G', 'Δ' => 'D', 'Ε' => 'E', 'Ζ' => 'Z', 'Η' => 'H', 'Θ' => '8',
+            'Ι' => 'I', 'Κ' => 'K', 'Λ' => 'L', 'Μ' => 'M', 'Ν' => 'N', 'Ξ' => '3', 'Ο' => 'O', 'Π' => 'P',
+            'Ρ' => 'R', 'Σ' => 'S', 'Τ' => 'T', 'Υ' => 'Y', 'Φ' => 'F', 'Χ' => 'X', 'Ψ' => 'PS', 'Ω' => 'W',
+            'Ά' => 'A', 'Έ' => 'E', 'Ί' => 'I', 'Ό' => 'O', 'Ύ' => 'Y', 'Ή' => 'H', 'Ώ' => 'W', 'Ϊ' => 'I',
+            'Ϋ' => 'Y',
+            'α' => 'a', 'β' => 'b', 'γ' => 'g', 'δ' => 'd', 'ε' => 'e', 'ζ' => 'z', 'η' => 'h', 'θ' => '8',
+            'ι' => 'i', 'κ' => 'k', 'λ' => 'l', 'μ' => 'm', 'ν' => 'n', 'ξ' => '3', 'ο' => 'o', 'π' => 'p',
+            'ρ' => 'r', 'σ' => 's', 'τ' => 't', 'υ' => 'y', 'φ' => 'f', 'χ' => 'x', 'ψ' => 'ps', 'ω' => 'w',
+            'ά' => 'a', 'έ' => 'e', 'ί' => 'i', 'ό' => 'o', 'ύ' => 'y', 'ή' => 'h', 'ώ' => 'w', 'ς' => 's',
+            'ϊ' => 'i', 'ΰ' => 'y', 'ϋ' => 'y', 'ΐ' => 'i',
+            // Turkish
+            'Ş' => 'S', 'İ' => 'I', 'Ç' => 'C', 'Ü' => 'U', 'Ö' => 'O', 'Ğ' => 'G',
+            'ş' => 's', 'ı' => 'i', 'ç' => 'c', 'ü' => 'u', 'ö' => 'o', 'ğ' => 'g',
+            // Russian
+            'А' => 'A', 'Б' => 'B', 'В' => 'V', 'Г' => 'G', 'Д' => 'D', 'Е' => 'E', 'Ё' => 'Yo', 'Ж' => 'Zh',
+            'З' => 'Z', 'И' => 'I', 'Й' => 'J', 'К' => 'K', 'Л' => 'L', 'М' => 'M', 'Н' => 'N', 'О' => 'O',
+            'П' => 'P', 'Р' => 'R', 'С' => 'S', 'Т' => 'T', 'У' => 'U', 'Ф' => 'F', 'Х' => 'H', 'Ц' => 'C',
+            'Ч' => 'Ch', 'Ш' => 'Sh', 'Щ' => 'Sh', 'Ъ' => '', 'Ы' => 'Y', 'Ь' => '', 'Э' => 'E', 'Ю' => 'Yu',
+            'Я' => 'Ya',
+            'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e', 'ё' => 'yo', 'ж' => 'j',
+            'з' => 'z', 'и' => 'i', 'й' => 'j', 'к' => 'k', 'л' => 'l', 'м' => 'm', 'н' => 'n', 'о' => 'o',
+            'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't', 'у' => 'u', 'ф' => 'f', 'х' => 'h', 'ц' => 'c',
+            'ч' => 'ch', 'ш' => 'sh', 'щ' => 'sh', 'ъ' => '', 'ы' => 'y', 'ь' => '', 'э' => 'e', 'ю' => 'yu',
+            'я' => 'ya',
+            // Ukrainian
+            'Є' => 'Ye', 'І' => 'I', 'Ї' => 'Yi', 'Ґ' => 'G',
+            'є' => 'ye', 'і' => 'i', 'ї' => 'yi', 'ґ' => 'g',
+            // Czech
+            'Č' => 'C', 'Ď' => 'D', 'Ě' => 'E', 'Ň' => 'N', 'Ř' => 'R', 'Š' => 'S', 'Ť' => 'T', 'Ů' => 'U',
+            'Ž' => 'Z',
+            'č' => 'c', 'ď' => 'd', 'ě' => 'e', 'ň' => 'n', 'ř' => 'r', 'š' => 's', 'ť' => 't', 'ů' => 'u',
+            'ž' => 'z',
+            // Polish
+            'Ą' => 'A', 'Ć' => 'C', 'Ę' => 'e', 'Ł' => 'L', 'Ń' => 'N', 'Ó' => 'o', 'Ś' => 'S', 'Ź' => 'Z',
+            'Ż' => 'Z',
+            'ą' => 'a', 'ć' => 'c', 'ę' => 'e', 'ł' => 'l', 'ń' => 'n', 'ó' => 'o', 'ś' => 's', 'ź' => 'z',
+            'ż' => 'z',
+            // Latvian
+            'Ā' => 'A', 'Č' => 'C', 'Ē' => 'E', 'Ģ' => 'G', 'Ī' => 'i', 'Ķ' => 'k', 'Ļ' => 'L', 'Ņ' => 'N',
+            'Š' => 'S', 'Ū' => 'u', 'Ž' => 'Z',
+            'ā' => 'a', 'č' => 'c', 'ē' => 'e', 'ģ' => 'g', 'ī' => 'i', 'ķ' => 'k', 'ļ' => 'l', 'ņ' => 'n',
+            'š' => 's', 'ū' => 'u', 'ž' => 'z'
+        );
+        $str = preg_replace(array_keys($options['replacements']), $options['replacements'], $str);
+        if ($options['transliterate']) {
+            $str = str_replace(array_keys($char_map), $char_map, $str);
+        }
+        $str = preg_replace('/[^\p{L}\p{Nd}]+/u', $options['delimiter'], $str);
+        $str = preg_replace('/(' . preg_quote($options['delimiter'], '/') . '){2,}/', '$1', $str);
+        $str = mb_substr($str, 0, ($options['limit'] ? $options['limit'] : mb_strlen($str, 'UTF-8')), 'UTF-8');
+        $str = trim($str, $options['delimiter']);
+        return $options['lowercase'] ? mb_strtolower($str, 'UTF-8') : $str;
+    }
+    function timeago($date){
+        include('db.php');
+        date_default_timezone_set($timezone);
+        if(empty($date)) {
+            return "Tarix daxil edilməyib";
+        }
+     
+        $periods         = array("saniyə", "dəqiqə", "saat", "gün", "həftə", "ay", "il", "on il");
+        $lengths         = array("60","60","24","7","4.35","12","10");
+     
+        $now             = time();
+        $unix_date         = strtotime($date);
+           // check validity of date
+        if(empty($unix_date)) {    
+            return "Səhv tarix";
+        }
+        // is it future date or past date
+        if($now > $unix_date) {    
+            $difference     = $now - $unix_date;
+            $tense         = "əvvəl";
+     
+        } else {
+            $difference     = $unix_date - $now;
+            $tense         = "İndi";
+        }
+     
+        for($j = 0; $difference >= $lengths[$j] && $j < count($lengths)-1; $j++) {
+            $difference /= $lengths[$j];
+        }
+     
+        $difference = round($difference);
+     
+        if($difference != 1) {
+            $periods[$j].= "";
+        }
+     
+        return "$difference $periods[$j] {$tense}";
+    }
+   	
+	function muellim_say(){
+	include("db.php");
+	$msay 	   = mysqli_query($baglan,"SELECT * FROM teachers");
+	$say_teach = mysqli_num_rows($msay);
+	return $say_teach;
+	}
+
+ //    function logs_count($type){
+ //    include("db.php");
+ //    if ($type=="all") {
+ //    $msay      = mysqli_query($baglan,"SELECT * FROM system_logs");
+ //    }
+ //    elseif ($type=="deactive") {
+ //    $msay      = mysqli_query($baglan,"SELECT * FROM system_logs WHERE logs_status=0");
+ //    }
+ //    elseif ($type=="active"){
+ //    $msay      = mysqli_query($baglan,"SELECT * FROM system_logs WHERE logs_status=1");    
+ //    }
+ //    $say_teach = mysqli_num_rows($msay);
+ //    return $say_teach;
+ //    }
+
+
+ //    function logs_info($type,$row){
+ //    include("db.php");
+ //    if ($type=="all") {
+ //    $msay      = mysqli_query($baglan,"SELECT * FROM system_logs ORDER BY logs_date DESC LIMIT 1");
+ //    }
+ //    elseif ($type=="deactive") {
+ //    $msay      = mysqli_query($baglan,"SELECT * FROM system_logs WHERE logs_status=0 ORDER BY logs_date DESC LIMIT 1");
+ //    }
+ //    elseif ($type=="active") {
+ //    $msay      = mysqli_query($baglan,"SELECT * FROM system_logs WHERE logs_status=1 ORDER BY logs_date DESC LIMIT 1");    
+ //    }  
+ //    $bax = mysqli_fetch_array($msay);
+ //    return $bax[$row];
+ //    }
+
+	function ders_say(){
+	include("db.php");
+	$dsay 	   = mysqli_query($baglan,"SELECT * FROM lessons");
+	$say_ders  = mysqli_num_rows($dsay);
+	return $say_ders;	
+	}
+
+
+	function isAdmin($id){
+	include("db.php");
+	$ad  = mysqli_query($baglan,"SELECT teacher_auth FROM teachers WHERE teacher_id='".$id."' ");
+	$bax = mysqli_fetch_array($ad);
+	return $bax['auth'];
+	}
+
+	function odenis_vaxti(){
+	$start_date = strtotime("2019-09-08"); 
+	$end_date = strtotime("2019-09-16"); 
+	return  ($end_date - $start_date)/60/60/24; 
+	}
+
+
+	function user_info($par,$data){
+		include("db.php");
+		$ad  = mysqli_query($baglan,"SELECT * FROM users WHERE user_id='".$par."' ");
+		$bax = mysqli_fetch_array($ad);
+		return $bax[$data];		
+	}
+
+    // function user_type($par){
+    //     if ($par=='teacher') {
+    //         $tip = _TEACHER;
+    //     }elseif ($par=='student') {
+    //         $tip = _STUDENT;
+    //     }else{
+    //     $tip = _PARENT;
+    //     }
+    //     return $tip;
+    // }
+    
+    function tarixaze($par)
+    {
+        $explode = explode(" ", $par);
+        $explode2 = explode("-", $explode[0]);
+        $zaman = substr($explode[1], 0, 5);
+        
+        if ($explode2[1] == "1") $ay = "Yanvar";
+        elseif ($explode2[1] == "2") $ay = "Fevral";
+        elseif ($explode2[1] == "3") $ay = "Mart";
+        elseif ($explode2[1] == "4") $ay = "Aprel";
+        elseif ($explode2[1] == "5") $ay = "May";
+        elseif ($explode2[1] == "6") $ay = "İyun";
+        elseif ($explode2[1] == "7") $ay = "İyul";
+        elseif ($explode2[1] == "8") $ay = "Avqust";
+        elseif ($explode2[1] == "9") $ay = "Sentyabr";
+        elseif ($explode2[1] == "10") $ay = "Oktyabr";
+        elseif ($explode2[1] == "11") $ay = "Noyabr";
+        elseif ($explode2[1] == "12") $ay = "Dekabr";
+        
+        return $explode2[2]." ".$ay." ".$explode2[0]."  ".$zaman;
+        
+    }
+    
+	function azeri_tarix($f, $zt = 'now'){  
+    $z = date("$f", strtotime($zt));  
+    $donustur = array(    
+        'January'   => 'yanvar',  
+        'February'  => 'fevral',  
+        'March'     => 'mart',  
+        'April'     => 'aprel',  
+        'May'       => 'may',  
+        'June'      => 'iyun',  
+        'July'      => 'iyul',  
+        'August'    => 'avqust',  
+        'September' => 'sentyabr',  
+        'October'   => 'oktyabr',  
+        'November'  => 'noyabr',  
+        'December'  => 'dekabr',    
+    );  
+    foreach($donustur as $en => $tr){  
+        $z = str_replace($en, $tr, $z);  
+    }  
+    if(strpos($z, 'may') !== false && strpos($f, 'F') === false) $z = str_replace('may', 'may', $z);  
+    return $z;  
+}  
+
+function turkce_tarix($f, $zt = 'now'){  
+    $z = date("$f", strtotime($zt));  
+    $donustur = array(  
+        'Monday'    => 'Pazartesi',  
+        'Tuesday'   => 'Salı',  
+        'Wednesday' => 'Çarşamba',  
+        'Thursday'  => 'Perşembe',  
+        'Friday'    => 'Cuma',  
+        'Saturday'  => 'Cumartesi',  
+        'Sunday'    => 'Pazar',  
+        'January'   => 'Ocak',  
+        'February'  => 'Şubat',  
+        'March'     => 'Mart',  
+        'April'     => 'Nisan',  
+        'May'       => 'Mayıs',  
+        'June'      => 'Haziran',  
+        'July'      => 'Temmuz',  
+        'August'    => 'Ağustos',  
+        'September' => 'Eylül',  
+        'October'   => 'Ekim',  
+        'November'  => 'Kasım',  
+        'December'  => 'Aralık',  
+        'Mon'       => 'Pts',  
+        'Tue'       => 'Sal',  
+        'Wed'       => 'Çar',  
+        'Thu'       => 'Per',  
+        'Fri'       => 'Cum',  
+        'Sat'       => 'Cts',  
+        'Sun'       => 'Paz',  
+        'Jan'       => 'Oca',  
+        'Feb'       => 'Şub',  
+        'Mar'       => 'Mar',  
+        'Apr'       => 'Nis',  
+        'Jun'       => 'Haz',  
+        'Jul'       => 'Tem',  
+        'Aug'       => 'Ağu',  
+        'Sep'       => 'Eyl',  
+        'Oct'       => 'Eki',  
+        'Nov'       => 'Kas',  
+        'Dec'       => 'Ara',  
+    );  
+    foreach($donustur as $en => $tr){  
+        $z = str_replace($en, $tr, $z);  
+    }  
+    if(strpos($z, 'Mayıs') !== false && strpos($f, 'F') === false) $z = str_replace('Mayıs', 'May', $z);  
+    return $z;  
+}  
+function rusca_tarix($f, $zt = 'now'){  
+    $z = date("$f", strtotime($zt));  
+    $donustur = array(  
+        'Monday'    => 'Pazartesi',  
+        'Tuesday'   => 'Salı',  
+        'Wednesday' => 'Çarşamba',  
+        'Thursday'  => 'Perşembe',  
+        'Friday'    => 'Cuma',  
+        'Saturday'  => 'Cumartesi',  
+        'Sunday'    => 'Pazar',  
+        'January'   => 'января',  
+        'February'  => 'февраля',  
+        'March'     => 'марта',  
+        'April'     => 'апреля',  
+        'May'       => 'мая',  
+        'June'      => 'июня',  
+        'July'      => 'июля',  
+        'August'    => 'августа',  
+        'September' => 'сентября',  
+        'October'   => 'октября',  
+        'November'  => 'ноября',  
+        'December'  => 'декабря',  
+        'Mon'       => 'Pts',  
+        'Tue'       => 'Sal',  
+        'Wed'       => 'Çar',  
+        'Thu'       => 'Per',  
+        'Fri'       => 'Cum',  
+        'Sat'       => 'Cts',  
+        'Sun'       => 'Paz',  
+        'Jan'       => 'Oca',  
+        'Feb'       => 'Şub',  
+        'Mar'       => 'Mar',  
+        'Apr'       => 'Nis',  
+        'Jun'       => 'Haz',  
+        'Jul'       => 'Tem',  
+        'Aug'       => 'Ağu',  
+        'Sep'       => 'Eyl',  
+        'Oct'       => 'Eki',  
+        'Nov'       => 'Kas',  
+        'Dec'       => 'Ara',  
+    );  
+    foreach($donustur as $en => $tr){  
+        $z = str_replace($en, $tr, $z);  
+    }  
+    if(strpos($z, 'мая') !== false && strpos($f, 'F') === false) $z = str_replace('мая', 'May', $z);  
+    return $z;  
+} 
+
+function almanca_tarix($f, $zt = 'now'){  
+    $z = date("$f", strtotime($zt));  
+    $donustur = array(  
+        'Monday'    => 'Pazartesi',  
+        'Tuesday'   => 'Salı',  
+        'Wednesday' => 'Çarşamba',  
+        'Thursday'  => 'Perşembe',  
+        'Friday'    => 'Cuma',  
+        'Saturday'  => 'Cumartesi',  
+        'Sunday'    => 'Pazar',  
+        'January'   => 'Januar',  
+        'February'  => 'Februar',  
+        'March'     => 'März',  
+        'April'     => 'April',  
+        'May'       => 'Mai',  
+        'June'      => 'Juni',  
+        'July'      => 'Juli',  
+        'August'    => 'August',  
+        'September' => 'September',  
+        'October'   => 'Oktober',  
+        'November'  => 'November',  
+        'December'  => 'Dezember',  
+        'Mon'       => 'Pts',  
+        'Tue'       => 'Sal',  
+        'Wed'       => 'Çar',  
+        'Thu'       => 'Per',  
+        'Fri'       => 'Cum',  
+        'Sat'       => 'Cts',  
+        'Sun'       => 'Paz',  
+        'Jan'       => 'Oca',  
+        'Feb'       => 'Şub',  
+        'Mar'       => 'Mar',  
+        'Apr'       => 'Nis',  
+        'Jun'       => 'Haz',  
+        'Jul'       => 'Tem',  
+        'Aug'       => 'Ağu',  
+        'Sep'       => 'Eyl',  
+        'Oct'       => 'Eki',  
+        'Nov'       => 'Kas',  
+        'Dec'       => 'Ara',  
+    );  
+    foreach($donustur as $en => $tr){  
+        $z = str_replace($en, $tr, $z);  
+    }  
+    if(strpos($z, 'мая') !== false && strpos($f, 'F') === false) $z = str_replace('мая', 'May', $z);  
+    return $z;  
+}   
+
+	/*
+	SELECT * FROM payment INNER JOIN students ON payment.pay_student = students.student_id;
+	*/
+
+	// function sticker($userid,$par){
+	// include("db/db.php");
+	// if ($userid!=0) {
+	// $st = "SELECT * FROM stickers WHERE sticker_for_who='".$userid."'";
+	// }
+	// else{
+	// $st = "SELECT * FROM stickers";	
+	// }
+	// $run = mysqli_query($baglan,$st);
+	// while ($bx = mysqli_fetch_array($run)) {
+	// 	return $bx[$par];
+	// }
+
+	// }
+// }
+
+ ?>
