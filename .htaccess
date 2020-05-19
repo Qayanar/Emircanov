@@ -1,0 +1,16 @@
+RewriteEngine On 
+
+RewriteRule ^([a-z]{2})(/?)$ index.php?lang=$1 [QSA]
+RewriteRule ^([a-z]{2})/(.*)(/?)$ index.php?lang=$1&page=$2 [QSA]
+
+RewriteRule ^albums/([a-z]{2})/([0-9a-zA-Z-_]+)/([0-9]+)(/?)$ albom_details.php?lang=$1&blog=$2&id=$3
+RewriteRule ^albums/([0-9a-zA-Z-_]+)/([0-9]+)(/?)$ albom_details.php?blog=$1&id=$2 [QSA]
+
+
+RewriteCond %{REQUEST_FILENAME} !-d	
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteRule ^([^\.]+)(/?)$ index.php?page=$1 [QSA]
+
+
+
