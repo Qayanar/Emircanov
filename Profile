@@ -1,0 +1,427 @@
+<?php 
+session_start();
+if (!isset($_SESSION['user_login'])) {
+  header("Location: login");
+}
+$title = _PROFILE;
+include("inc/head.php");
+include("inc/navbar.php");
+include("inc/menu.php");
+ ?>
+    <div class="content-wrapper">
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0 text-dark"><?=_PROFILE;?></h1>
+            </div>
+            <div class="col-sm-6">       </div>
+          </div>
+        </div>
+      </div>  
+   <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="card card-primary card-outline">
+              <div class="card-body box-profile">
+                <div class="text-center">
+                  <?php 
+                $avatar      = (user_info($_SESSION['user_id'],'gender')==1) ? 'avatar_male' : 'avatar_female';
+                $gender_text = (user_info($_SESSION['user_id'],'gender')==1) ? 'oğlu' : 'qızı';
+                 ?>
+                 <?php if(empty(user_info($_SESSION['user_id'],'avatar'))){ ?>
+                <img src="<?= $url; ?>assets/img/<?= $avatar; ?>.png" class="profile-user-img img-fluid img-circle" alt="<?= user_info($_SESSION['user_id'],'name'); ?>">
+              <?php }else{ ?>
+                <img src="<?= $url; ?><?= user_info($_SESSION['user_id'],'avatar'); ?>" class="profile-user-img img-fluid img-circle" alt="<?= user_info($_SESSION['user_id'],'name'); ?>">
+              <?php } ?>
+                </div>
+                <h3 class="profile-username text-center"><?= user_info($_SESSION['user_id'],'surname').' '.user_info($_SESSION['user_id'],'name').' '.user_info($_SESSION['user_id'],'middle') .' '.$gender_text; ?> </h3>
+                <p class="text-info text-center"><?= user_info($_SESSION['user_id'],'email'); ?></p>
+                <ul class="list-group list-group-unbordered mb-3">
+                  <li class="list-group-item">
+                    <b><?= _BIRTHDAY; ?></b> 
+                    <a class="float-right">
+                      <?= azeri_tarix('j F Y',user_info($_SESSION['user_id'],'birthday')); ?>
+                      <span class="text-success">
+                        (<?= yash_hesabla(user_info($_SESSION['user_id'],'birthday')); ?> yaş)
+                      </span>
+                    </a>
+                  </li>
+                  <li class="list-group-item">
+                    <b><?= _LASTVISIT; ?></b> 
+                    <a class="float-right">
+                      <?= timeago(user_info($_SESSION['user_id'],'last_logged')); ?>
+                    </a>
+                  </li>
+                  <li class="list-group-item">
+                    <b><?= _REGTIME; ?></b> 
+                    <a class="float-right">
+                      <?= azeri_tarix('j F Y',user_info($_SESSION['user_id'],'reg_time')); ?>
+                    </a>
+                  </li>
+                  <?php 
+                   $result    = @file_get_contents('http://ip-api.com/json/'.$ip.'');
+                   $result    = (array) json_decode($result);
+                   // $unlink_image = $_SERVER['DOCUMENT_ROOT'].'/nicat/'.user_info($_SESSION['user_id'],'avatar');
+                                        
+                   //                    unlink($unlink_image);
+                                        
+                   ?>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-9">
+            <div class="card">
+              <div class="card-header p-2">
+                <ul class="nav nav-pills">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#hesab_melumat" data-toggle="tab">Hesab məlumatları</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link " href="#sifre" data-toggle="tab">Şifrə</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#photo" data-toggle="tab">Şəkil</a>
+                  </li>
+                   <li class="nav-item">
+                    <a class="nav-link" href="#timeline" data-toggle="tab">Təhlükəsizlik</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="card-body">
+                <div class="tab-content">
+                  <div class="tab-pane active" id="hesab_melumat">
+                    <form  method="POST" id="account_info_update" class="form-horizontal">
+                      <div class="form-group row">
+                        <label for="name" class="col-sm-2 col-form-label"><?= _NAME; ?></label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" name="name" id="name" value="<?= user_info($_SESSION['user_id'],'name'); ?>">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="surname" class="col-sm-2 col-form-label"><?= _SURNAME; ?></label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" name="surname" id="surname" value="<?= user_info($_SESSION['user_id'],'surname'); ?>">
+                        </div>
+                      </div>
+                       <div class="form-group row">
+                        <label for="middle" class="col-sm-2 col-form-label"><?= _MIDDLE; ?></label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" name="middle" id="middle" value="<?= user_info($_SESSION['user_id'],'middle'); ?>">
+                        </div>
+                      </div>
+                       <div class="form-group row">
+                        <label for="email" class="col-sm-2 col-form-label"><?= _EMAIL; ?></label>
+                        <div class="col-sm-10">
+                          <input type="email" class="form-control" name="email" id="email" value="<?= user_info($_SESSION['user_id'],'email'); ?>">
+                        </div>
+                      </div>
+                       <div class="form-group row">
+                        <label for="birthday" class="col-sm-2 col-form-label"><?= _BIRTHDAY; ?></label>
+                        <div class="col-sm-10">
+                          <input type="date" class="form-control" name="birthday" id="birthday" value="<?= user_info($_SESSION['user_id'],'birthday'); ?>" placeholder="Name">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="gender" class="col-sm-2 col-form-label"><?= _GENDER; ?></label>
+                        <div class="col-sm-10">
+                        <select class="form-control" name="gender">
+                          <option value="1" <?php if(user_info($_SESSION['user_id'],'gender')==1){ echo "selected";} ?>>Kişi</option>
+                          <option value="2" <?php if(user_info($_SESSION['user_id'],'gender')==2){ echo "selected";} ?>>Qadın</option>
+                        </select>
+                      </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="verify" class="col-sm-2 col-form-label">Təsdiqləmə kodunuz</label>
+                        <div class="col-sm-10">
+                          <input type="password" class="form-control" name="verify" id="verify"  placeholder="Təsdiq kodunuzu daxil edin">
+                           <code>Təhlükəsizlik səbəbi ilə qeyd edilməsi vacibdir.</code>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="offset-sm-2 col-sm-10">
+                          <button type="submit" class="btn btn-success" id="account_info_update">
+                         <i class="fas fa-retweet"></i> Yenilə
+                        </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                  <!-- /.tab-pane -->
+                  <div class="tab-pane" id="sifre">
+                    <form  method="POST" id="account_pass_update" class="form-horizontal">
+                      <div class="form-group row">
+                        <label for="oldPass" class="col-sm-2 col-form-label">Hazırki şifrəniz</label>
+                        <div class="col-sm-10">
+                          <input type="password" class="form-control" name="oldPass" id="oldPass" placeholder="*******">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="newPass" class="col-sm-2 col-form-label">Yeni şifrəniz</label>
+                        <div class="col-sm-10">
+                          <input type="password" class="form-control" name="newPass" id="newPass" placeholder="*******">
+                        </div>
+                      </div>
+                       <div class="form-group row">
+                        <label for="rePass" class="col-sm-2 col-form-label">Yeni şifrənizin təkrarı</label>
+                        <div class="col-sm-10">
+                          <input type="password" class="form-control" name="rePass" id="rePass" placeholder="*******">
+                        </div>
+                      </div>
+                       <div class="form-group row">
+                        <label for="verify" class="col-sm-2 col-form-label">Təsdiqləmə kodunuz</label>
+                        <div class="col-sm-10">
+                          <input type="password" class="form-control" name="verify" id="verify" placeholder="*******">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="offset-sm-2 col-sm-10">
+                          <button type="submit" class="btn btn-success" id="account_pass_update">
+                         <i class="fas fa-retweet"></i> Yenilə
+                        </button>
+                        </div>
+                      </div>
+                    </form>
+                <div class="form-group row">
+                  <label for="verify" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                <div>
+                <div style="font-weight: bold; padding: 4px">
+                   Şifrə hesaba giriş açarıdır və hesabınızı başqalarından qorumaq istəyirsinizsə şifrənizi düzgün seçməlisiniz.<br>Aşağıdakılara diqqət etmənizi məsləhət görürük.                </div>
+                <div style="padding: 1px">
+                   <ul style="list-style-position: inside; list-style: circle">
+                       <li>Minumum simvol sayı 8, minumum rəqəm və hərf sayı 2 olmalıdır.</li>
+                       <li>Rahat təxmin edilən şifrə seçməyin. Lüğət sözləri, adınız və sair.</li>
+                       <li>Şifrənizi qalıcı bir yerə yazmayın, e-mail ilə göndərməyin.</li>
+                       <li>Şifrənizi daxil edərkən başqalarının görməsinə imkan verməyin</li>
+                       <li>Şifrənizi heç kəsə deməyin (başqaları, tutuquşu və sair.).</li>
+                       <li>Şifrənizi ictimai yerlərdə ucadan deməyin (marşrut, yeməkxana və sair).</li>
+                       <li>Şifrənizin başqası tərəfindən öyrənilməsi ilə bağlı hər hansı şübhə hiss etdiyinizdə şifrənizi dəyişdirin.</li>
+                       <li>Müəyyən intervallarla şifrənizi dəyişdirin.</li>
+                   </ul>
+                </div>
+              </div>
+            </div>
+            </div>
+                  </div>
+                  <!-- /.tab-pane -->
+                  <div class="tab-pane" id="photo">
+                    <form  method="POST" enctype="multipart/form-data" class="form-horizontal">
+                      <?php 
+                        $fayl_adi = @$_FILES["photo"]["name"];
+                        $verify   = post($_POST['verify']);
+                        if(isset($_POST['photo_update']) && $_SERVER["REQUEST_METHOD"]=="POST"){
+                          $uzanti = @strtolower(end(explode(".",$fayl_adi)));
+                          $fayl_adi = "users_".$_SESSION['user_id'].'_'.rand().rand().rand().rand().".".$uzanti;
+                          $tmp_ad = @$_FILES["photo"]["tmp_name"];
+                          $formati = @$_FILES["photo"]["type"];
+                          if(isset($_FILES["photo"])){
+                           if(!empty($_FILES["photo"]["name"])){
+                             $max_olcu=2000000;
+                            if( ($uzanti=='jpg' || $uzanti=='jpeg' || $uzanti=='png' || $uzanti=='gif') && ($formati=="image/png" || $formati=="image/gif" || $formati=='image/jpeg' || $formati=='image/jpg')){
+                                      $yeri='assets/img/users/';
+                                      if(move_uploaded_file($tmp_ad,$yeri.$fayl_adi)){
+                                        mysqli_query($baglan,"UPDATE users SET avatar='".$yeri.$fayl_adi."' WHERE user_id='".$_SESSION['user_id']."'");
+                                       echo '
+                                        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+                                        <link rel="stylesheet" href="'.$url.'assets/css/sweetalert.css">
+                                        <script src="'.$url.'assets/js/sweetalert.min.js"></script>
+                                        <script>
+                                        $( document ).ready(function() {
+                                            swal({
+                                               title: "Uğurlu",
+                                               text: "Əlavə olundu!",
+                                               confirmButtonColor: "#0AABB2",
+                                               confirmButtonText: "Tamam",
+                                               type: "success",
+                                        }, function(isConfirm) {
+                                             document.location.href="profile"
+                                        });
+                                        });
+                                        </script>';
+                                      }
+                                      else{
+                                        echo '
+                                        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+                                        <link rel="stylesheet" href="'.$url.'assets/css/sweetalert.css">
+                                        <script src="'.$url.'assets/js/sweetalert.min.js"></script>
+                                        <script>
+                                        $( document ).ready(function() {
+                                            swal({
+                                               title: "Xəta..",
+                                               text: "Xəta baş verdi!",
+                                               confirmButtonColor: "#0AABB2",
+                                               confirmButtonText: "Tamam",
+                                               type: "error",
+                                        }, function(isConfirm) {
+                                             document.location.href="profile"
+                                        });
+                                        });
+                                        </script>';
+                                      }
+                                    }
+                                    else{
+                                      echo '
+                                         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+                                        <link rel="stylesheet" href="'.$url.'assets/css/sweetalert.css">
+                                        <script src="'.$url.'assets/js/sweetalert.min.js"></script>
+                                        <script>
+                                        $( document ).ready(function() {
+                                            swal({
+                                               title: "Xəta..",
+                                               text: "Şəkil yalnız PNG,JPG,JPEG formatında ola bilər!",
+                                               confirmButtonColor: "#0AABB2",
+                                               confirmButtonText: "Tamam",
+                                               type: "warning",
+                                        }, function(isConfirm) {
+                                             document.location.href="profile"
+                                        });
+                                        });
+                                        </script>';
+                                    }
+                                    
+                                   }
+                                   else{
+                                     echo '
+                                        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+                                        <link rel="stylesheet" href="'.$url.'assets/css/sweetalert.css">
+                                        <script src="'.$url.'assets/js/sweetalert.min.js"></script>
+                                        <script>
+                                        $( document ).ready(function() {
+                                            swal({
+                                               title: "Xəta..",
+                                               text: "Şəkil seçilməyib!",
+                                               confirmButtonColor: "#0AABB2",
+                                               confirmButtonText: "Tamam",
+                                               type: "warning",
+                                        }, function(isConfirm) {
+                                             document.location.href="profile"
+                                        });
+                                        });
+                                        </script>';
+                                   }
+                                 }
+                          }
+                             ?>
+                      <div class="form-group row">
+                        <label for="photo" class="col-sm-2 col-form-label">Şəkil seçin</label>
+                        <div class="col-sm-10">
+                          <input type="file" class="form-control" name="photo" id="photo" >
+                        </div>
+                      </div>
+                      
+                       <div class="form-group row">
+                        <label for="verify" class="col-sm-2 col-form-label">Təsdiqləmə kodunuz</label>
+                        <div class="col-sm-10">
+                          <input type="password" class="form-control" name="verify" id="verify" placeholder="*******">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="offset-sm-2 col-sm-10">
+                          <button type="submit" class="btn btn-success" name="photo_update" id="account_photo_update">
+                         <i class="fas fa-retweet"></i> Yenilə
+                        </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                 
+                </div>
+                <!-- /.tab-content -->
+              </div><!-- /.card-body -->
+            </div>
+            <!-- /.nav-tabs-custom -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+          
+
+        </div>
+  </div>
+ <?php include("inc/footer.php"); ?>
+<script type="text/javascript">
+     $(document).ready(function(){
+        $("#account_info_update").on("submit", function(e){
+            e.preventDefault();
+         $.ajax({
+            url:"<?= $url; ?>pages/ajax/account_info_update.php",
+            type: "POST",
+            data: new FormData(this),
+            contentType: false,
+            processData: false,
+            success: function(data){
+                var newData = JSON.parse(data);
+                swal({
+                     title: "Hesabım",
+                     text: newData.message,
+                     showCancelButton: false,
+                     showConfirmButton: false,
+                     type: newData.status,
+                  });
+                // sweetAlert("Sosial Linklər", newData.message, newData.status);
+              setTimeout(function(){
+               window.location.reload(1);
+            }, 2000);
+            }
+         })   
+        })
+     })
+      $(document).ready(function(){
+        $("#account_pass_update").on("submit", function(e){
+            e.preventDefault();
+         $.ajax({
+            url:"<?= $url; ?>pages/ajax/account_pass_update.php",
+            type: "POST",
+            data: new FormData(this),
+            contentType: false,
+            processData: false,
+            success: function(data){
+                var newData = JSON.parse(data);
+                swal({
+                     title: "Şifrə yenilənməsi",
+                     text: newData.message,
+                     showCancelButton: false,
+                     showConfirmButton: false,
+                     type: newData.status,
+                  });
+                // sweetAlert("Sosial Linklər", newData.message, newData.status);
+              setTimeout(function(){
+               window.location.reload(1);
+            }, 2000);
+            }
+         })   
+        })
+     })
+        $(document).ready(function(){
+        $("#account_info_update").on("submit", function(e){
+            e.preventDefault();
+         $.ajax({
+            url:"<?= $url; ?>pages/ajax/account_photo_update.php",
+            type: "POST",
+            data: new FormData(this),
+            contentType: false,
+            processData: false,
+            success: function(data){
+                var newData = JSON.parse(data);
+                swal({
+                     title: "Hesabım",
+                     text: newData.message,
+                     showCancelButton: false,
+                     showConfirmButton: false,
+                     type: newData.status,
+                  });
+                // sweetAlert("Sosial Linklər", newData.message, newData.status);
+              setTimeout(function(){
+               window.location.reload(1);
+            }, 2000);
+            }
+         })   
+        })
+     })
+ </script>
