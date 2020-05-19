@@ -1,0 +1,67 @@
+<?php 
+define("access", true);
+include("app/db.php");
+include("app/function.php");
+include("lan.php");
+
+// GET parametridir 
+$page = mysqli_real_escape_string($baglan,$_GET['page']); 
+ 
+//Pages papkasinin icindeki fayllarin adlari bu arrayin icinde olmalidir
+// $massiv = [
+// 				'404',
+// 				'home',
+// 				'login',
+// 				'today',
+// 				'logout',
+// 				'device',
+// 				'netice',
+// 				'alboms',
+// 				'contact',
+// 				'profile',
+// 				'gallery',
+// 				'lessons',
+// 				'teachers',
+// 				'settings',
+// 				'holidays',
+// 				'ip_filter',
+// 				'languages',
+// 				'logo_config',
+// 				'social_links'
+// 			];
+
+	$files = [];
+	$helperDir = realpath('.') . '/pages';
+    if ($dh = opendir($helperDir)){
+      while($file = readdir($dh)){
+      		$format = explode(".", $file);
+        if ((is_file($helperDir . '/' . $file) AND ($format[1]=='php'))){
+          	$files[] = $format[0];
+        }
+      }
+    }
+	$massiv = $files;
+
+// [^a-z0-9_]  icaze verilen simvollar
+// if (preg_match('/[^a-z0-9\/_]/i', $page)) {
+//     die('Hacking Attempts!');//quit execution
+//     return false;//quitting a function
+// } 
+
+	
+// Eger pages papkasindaki fayl varsa hemin fayli acir
+if (in_array($page,$massiv) AND file_exists('pages/'.$page.'.php')) {
+	include_once("pages/".$page.".php"); 
+}
+
+// page deyeri bosdursa birbasa home.php -e yonlenir
+elseif(empty($page)) {
+	include_once("pages/login.php");
+}
+
+// Umumiyyetle sehife yoxdursa 404.php sehifesi acilacag
+else{
+	include_once("pages/404.php");
+}
+
+?>
