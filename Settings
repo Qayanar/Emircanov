@@ -1,0 +1,142 @@
+<?php 
+session_start();
+if (!isset($_SESSION['user_login'])) {
+  header("Location: login");
+}
+elseif(($_SESSION['user_type']!=1) AND ($_SESSION['user_id']!=1)) { 
+ header("Location: 404");
+}
+// if($_SESSION['user_type']!=1) { 
+// echo '
+// <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+// <link rel="stylesheet" href="'.$url.'assets/css/sweetalert.css">
+// <script src="'.$url.'assets/js/sweetalert.min.js"></script>
+// <script>
+// $(document).ready(function() {
+// swal({
+//    title: "'._ERROR.'",
+//    text: "Sizin icazəniz yoxdur",
+//    confirmButtonColor: "#FE2E2E",
+//    confirmButtonText: "'._CLOSE.'",
+//    type: "error",
+// }, function(isConfirm) {
+//   document.location.href="home"
+// });
+// });
+// </script>'; 
+// exit; 
+// }
+$title = "Tənzimləmələr";
+include("inc/head.php");
+include("inc/navbar.php");
+include("inc/menu.php");
+ ?>
+        <div class="content-wrapper" >
+          <div class="content-header">
+            <div class="container-fluid">
+              <div class="row mb-2">
+                <div class="col-sm-6">
+                <h1 class="m-0 text-dark">Tənzimləmələr</h1>
+                </div>
+                <div class="col-sm-6"></div>
+              </div>
+            </div>
+          </div>
+          <section class="content">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-12">
+                   
+                  <div class="card card-primary">
+                    <div class="card-header">
+                      <h3 class="card-title">Ümumi tənzimləmələr</h3>
+                    </div>
+                    <form method="POST" id="config_update">
+                    <div class="card-body">
+                      <div class="row">
+                          <div class="card-body">
+                            <div class="row">
+                              <div class="col-sm-4">
+                                <label>Məktəb adı</label>
+                                <input type="text" name="name" class="form-control" value="<?= settings('school_name'); ?>">
+                              </div>
+                              <div class="col-sm-4">
+                                <label>Məktəb ünvanı</label>
+                                <input type="text" name="address" class="form-control" value="<?= settings('school_address'); ?>">
+                              </div>
+                              <div class="col-sm-4">
+                                <label>Əlaqə telefonu</label>
+                                <input type="text" name="phone"  class="form-control" value="<?= settings('school_phone'); ?>">
+                              </div>
+                               <div class="col-sm-4">
+                                <label>E-Poçt ünvanı</label>
+                                <input type="text" name="email"  class="form-control" value="<?= settings('school_email'); ?>">
+                              </div>
+                              <div class="col-sm-4">
+                                <label>Valyuta</label>
+                                <input type="text" name="currency"  class="form-control" value="<?= settings('currency'); ?>">
+                              </div>
+                              <div class="col-sm-4">
+                                <label>Məktəbin bağlanma səbəbi</label>
+                                <input type="text" name="closed_text"  class="form-control" value="<?= settings('system_closed_text'); ?>">
+                              </div>
+                           <div class="col-sm-4">
+                            <label>Sistemin status</label><br>
+			                      <div class="icheck-primary d-inline">
+			                        <input type="radio" value="1" id="open" name="status" <?= (settings('system_status')==1) ? 'checked' : ''; ?>> 
+			                        <label for="open"> Açıq</label>
+			                      </div>&nbsp;
+			                      <div class="icheck-danger d-inline">
+			                        <input type="radio" value="0" id="close" name="status" <?= (settings('system_status')==0) ? 'checked' : ''; ?>>
+			                        <label for="close"> Bağlı</label>
+			                      </div><br>
+                            <div class="bg-danger color-palette">
+                              <span>&nbsp;<b>Bağlı</b> statusu seçilərsə istifadəçilər sistemə giriş edə bilməyəcəklər.</span>
+                            </div>
+                        	</div>
+                          </div>
+                        </div>
+                        <div class="col-4">
+                          <button type="submit" name="config_update" class="btn btn-success" >
+                              <span class="fa fa-plus"></span> Yenilə
+                          </button>
+                        </div>
+                      </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+     </div>
+ <?php include("inc/footer.php"); ?>
+<script type="text/javascript">
+     $(document).ready(function(){
+        $("#config_update").on("submit", function(e){
+            e.preventDefault();
+         $.ajax({
+            url:"<?= $url; ?>pages/ajax/config_update.php",
+            type: "POST",
+            data: new FormData(this),
+            contentType: false,
+            processData: false,
+            success: function(data){
+                var newData = JSON.parse(data);
+                swal({
+                     title: "Tənzimləmələr",
+                     text: newData.message,
+                     showCancelButton: false,
+                     showConfirmButton: false,
+                     type: newData.status,
+                  });
+                // sweetAlert("Sosial Linklər", newData.message, newData.status);
+              setTimeout(function(){
+               window.location.reload(1);
+            }, 2000);
+            }
+         })   
+        })
+     })
+ </script>
