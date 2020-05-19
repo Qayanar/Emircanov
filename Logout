@@ -1,0 +1,15 @@
+<?php 
+session_start();
+
+
+// $text     = $_SESSION['login'].' sistemdən çıxış etdi.';
+// $log_add  = mysqli_query($baglan,"INSERT INTO system_logs (user_type,user_id,ip_address,user_agent,activity_text,logs_status,who_create) 
+// VALUES('".$_SESSION['type']."','".$_SESSION['id']."','".$ip."','".$user_agent."','".$text."','1','Sistem')");
+unset($_SESSION['user_id']);
+unset($_SESSION['user_login']);
+unset($_SESSION['user_type']);
+unset($_SESSION['lang']);
+
+session_destroy();
+header("Location: login");
+ ?>
