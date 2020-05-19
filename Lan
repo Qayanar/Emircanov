@@ -1,0 +1,25 @@
+<?php 
+
+$dil = @$_GET['lang'];
+switch ($dil) {
+   case "us" :
+      $dil = "us";
+   break;
+   case "ru" :
+      $dil = "ru";
+   break;
+    case "tr" :
+      $dil = "tr";
+   break;
+     case "sa" :
+      $dil = "sa";
+   break;
+    case "de" :
+      $dil = "de";
+   break;
+   default :
+      $dil = "az";
+   break;
+}
+include_once("dil/main.php");
+ ?>
