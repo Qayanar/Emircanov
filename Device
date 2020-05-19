@@ -1,0 +1,63 @@
+<?php 
+session_start();
+if (!isset($_SESSION['user_login'])) {
+  header("Location: login");
+}
+$title = _DEVICEINFO;
+include("inc/head.php");
+include("inc/navbar.php");
+include("inc/menu.php");
+ ?>
+ 
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark"><?=_DEVICEINFO;?></h1>
+          </div>
+          <div class="col-sm-6">       </div>
+        </div>
+      </div>
+    </div>
+    <section class="content">
+      <div class="container-fluid">
+            <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><?= _DEVICEINFO; ?></h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table class="table table-bordered">
+                  <thead>                  
+                    <tr>
+                      <th><?= _DEVICENAME; ?></th>
+                      <th><?= _MYCOUNTRY; ?></th>
+                      <th><?= _CITY; ?></th>
+                      <th><?= _IP; ?></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      <?php 
+                        $cihaz = $_SERVER['HTTP_USER_AGENT']; 
+                        $iphone = strpos($cihaz,"iPhone"); 
+                        $android = strpos($cihaz,"Android"); 
+                        $ipod = strpos($cihaz,"iPod"); 
+                       ?>
+                    <tr>
+                      <td><?php if($iphone == true || $android == true || $ipod == true){ echo _PHONE; } else{ echo _COMPUTER; } ?> </td>
+                      <td><img src="<?= $url; ?>assets/img/countries/<?= strtolower($result['countryCode']); ?>.png"> &nbsp;<?= $result['country']; ?> </td>
+                      <td><?= $result['city']; ?></td>
+                      <td><?= $result['query']; ?></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div> 
+      </section>
+    </div>
+  </div>
+ <?php include("inc/footer.php"); ?>
