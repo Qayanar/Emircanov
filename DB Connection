@@ -1,0 +1,30 @@
+<?php 
+	ob_start();
+	session_start();
+	error_reporting(0);
+	$remoteAddr = $_SERVER['REMOTE_ADDR'];
+	$user_agent = $_SERVER['HTTP_USER_AGENT'];
+	$url = ($remoteAddr=="::1") ? 'http://localhost/sistem/' ;
+    // Site URL
+	$ip = ($remoteAddr=="::1") ? '146.241.128.0' : $remoteAddr;
+	$result = @file_get_contents('http://ip-api.com/json/'.$ip.'');
+	$result = (array) json_decode($result);
+	date_default_timezone_set('Asia/Baku');
+		
+	$now = date("Y-m-d H:i:s");
+	@$host = 'localhost';   // Host adı
+	@$user = 'root';        // Mysql istifadəçi adı  
+	@$pass = 'bababana1234';    // Mysql şifrəsi
+	@$db   = 'tms';         // Verilənlər bazası adı
+
+	## Mysql Bağlantısı ##
+	$baglan = mysqli_connect($host, $user, $pass) or die (mysqli_connect_error());
+	
+	## Verilənlər bazası seçmək ##
+	mysqli_select_db($baglan,$db) or die (mysqli_connect_error()); 
+
+	## Azerbaycan dili Xarakterlərini dəstəkləməsi üçün  ##
+	@mysqli_query($baglan,'SET CHARACTER SET "utf8"');
+	@mysqli_query($baglan,'SET NAMES "utf8"');
+
+ ?>
