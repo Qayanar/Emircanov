@@ -1,0 +1,100 @@
+<?php 
+//  Login.php start
+define("_ENTER","Bойти");
+define("_STUDENT","Cтудент");
+define("_TEACHER","Учитель");
+define("_PARENT","Pодители");
+define("_LIKE","- kak -");
+define("_USERNAME","Имя пользователя");
+define("_PASSWORD","Пароль");
+define("_NTM","Образовательный Центр Ниджат");
+define("_ERROR","Oшибка !");
+define("_ERRORCNTRY","Ошибка страны!");
+define("_ERRORCITYTEXT","Запрещен въезд из Армении.");
+define("_EMPTY","Имя пользователя или пароль пустые.");
+define("_SAYIN","Уважаемый");
+define("_DISABLE","Ваш аккаунт отключен.");
+define("_NOTFOUND","Информация не найдена");
+define("_CLOSE", "Близко");
+define("_OK", "Xорошо");
+define("_CHOOSEONE", "Выбери один");
+define("_ABITURIYENT", "Заявители");
+define("_DIGER", "Pазное");
+define("_WELCOME", "Добро пожаловать");
+define("_LOGOUT", "Уверены ли вы,что хотите выйти?");
+define("_YES", "Да");
+define("_NO", "Hет");
+
+//  Login.php end here
+
+define("_AZ", "Aзербайджанец");
+define("_TR", "Tурецкий");
+define("_EN", "Aнглийский");
+define("_RU", "Pусский");
+define("_SA", "Aрабский");
+
+
+
+// device start
+define("_DEVICEINFO", "Информация об устройстве");
+define("_DEVICENAME", "Имя устройства");
+define("_PHONE", "Mобильный телефон");
+define("_COMPUTER", "Kомпьютер");
+define("_MYCOUNTRY", "Страна");
+define("_SOFT", "Soft адрес");
+define("_CITY", "Город");
+define("_IP", "IP адрес");
+
+// device end
+
+// COMMON TRANLATE
+
+define("_ABOUT","Oколо");
+define("_TELEFON","Телефон");
+define("_UNVAN","Aдрес");
+define("_SEX","Пол");
+define("_VIEWPRO","Просмотреть профиль");
+define("_LESSON","Урок");
+define("_JOB","Работа");
+define("_LOADING","Загружается");
+define("_WEATHERINFO","O погоде");
+define("_PROFILE","Мой аккаунт");
+define("_BIRTHDAY","День рождения");
+define("_PERSON", "человек");
+define("_LASTVISIT", "Дата последнего посещения");
+define("_REGTIME", "Дата регистрации");
+define("_NAME", "Имя");
+define("_SURNAME", "Фамилия");
+define("_MIDDLE", "Имя oтца");
+define("_EMAIL", "Эл. почта");
+define("_GENDER", "Пол");
+// define("_ABOUT","Haqqında");
+// define("_ABOUT","Haqqında");
+// define("_ABOUT","Haqqında");
+// define("_ABOUT","Haqqında");
+// define("_ABOUT","Haqqında");
+// define("_ABOUT","Haqqında");
+// define("_ABOUT","Haqqında");
+
+// COMMON
+
+// Menus start
+define("_HOME","Главная");
+define("_NOTIFY","Уведомление");
+define("_EXIT","Bыйти");
+define("_EXTRAS","Дополнительно");
+define("_CONFIG","Hастройки");
+define("_MYCHILD", "Мой ребенок");
+define("_RESULT","Результаты экзамена");
+define("_LESSONS","Занятия");
+define("_MYDEVICE","Mое устройство");
+define("_STUDENTS", "Ученики");
+define("_TEACHERS", "Учителей");
+define("_TODAYBIRTH", "Рожденные сегодня");
+define("_PARENTS", "Pодители");
+define("_NEW", "Hовый");
+define("_TODAY", "Сегодня в истории");
+// Menus end here
+
+
+ ?>
