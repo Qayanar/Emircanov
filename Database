@@ -1,0 +1,77 @@
+-- phpMyAdmin SQL Dump
+-- version 4.6.6
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost
+-- Generation Time: May 19, 2020 at 07:29 PM
+-- Server version: 5.7.17-log
+-- PHP Version: 5.6.30
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `ntm`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `user_id` int(11) NOT NULL,
+  `user_type` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `surname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `middle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `gender` tinyint(11) NOT NULL COMMENT '1=kişi , 2=qadın',
+  `avatar` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `birthday` date NOT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `login` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `verify_password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1=Active,0=Deactive',
+  `last_logged` datetime NOT NULL,
+  `reg_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `user_type`, `name`, `surname`, `middle`, `gender`, `avatar`, `birthday`, `email`, `login`, `password`, `verify_password`, `status`, `last_logged`, `reg_time`) VALUES
+(1, 1, 'Ağakərim', 'Kərimov', 'Məhərrəm', 1, 'assets/img/users/users_1_893113536295931630.jpeg', '1995-05-07', 'phpkodcu@gmail.com', 'Admin', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'kamo', 1, '2020-05-16 14:13:35', '2020-04-22 20:47:50'),
+(2, 2, 'Cahangir', 'Səmədov', 'Elxan', 1, '', '2000-05-07', 'cahangir@gmail.com', 'cahangir', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'kamo', 1, '2020-04-25 17:09:36', '2020-04-22 22:34:58'),
+(3, 3, 'Təranə', 'Kərimova', 'Tofiq', 2, 'assets/img/users/users_3_8971301845121678.png', '1981-05-07', 'terane@gmail.com', 'terane', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'kamo', 1, '2020-05-06 20:54:55', '2020-04-23 19:41:26');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`user_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
