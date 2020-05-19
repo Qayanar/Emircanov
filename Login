@@ -1,0 +1,211 @@
+<?php 
+ if (isset($_SESSION['user_login'])) {
+    header("Location: home");
+  }
+$title = settings('school_name');
+include("inc/head.php");
+include("assets/css/login.php");
+?>
+<body class="hold-transition login-page">
+  <nav>
+    <ul>
+    <?php 
+        $qry = "SELECT * FROM languages WHERE lang_status=1";
+        $qrr = mysqli_query($baglan,$qry);
+        while ($bb = mysqli_fetch_array($qrr)) {
+    ?>
+      <li>
+        <a href="<?= $url.''.$bb['lang_code']; ?>">
+          <img title="<?= $bb['lang_name']; ?>" src="<?= $url; ?>assets/img/countries/<?= $bb['lang_code'];?>.png" style="width: 25px; ">
+        </a>
+      </li>
+    <?php } ?>
+    </ul>
+  </nav>
+<div class="login-box">
+  <div class="login-logo">
+    <b style="color: #ffffff;"><?= settings('school_name'); ?> </b> 
+  </div>
+  <div class="card">
+    <div class="card-body login-card-body">
+      <p class="login-box-msg"> 
+        <?php if (date("dm")=="0803") { ?>
+        <img src="<?= $url; ?>assets/img/common/8mart.png" style="width: 90px;"> 
+        <?php }elseif (date("dm")=="0911") { ?>
+          <img src="<?= $url; ?>assets/img/common/bayraqgunu.png" style="width: 90px;"> 
+        <?php }elseif (date("dm")=="2001") { ?>
+        <img src="<?= $url; ?>assets/img/common/qerenfil.png" style="width: 90px;"> 
+        <?php }else{ ?>
+        <img src="<?= $url.''.settings('school_logo'); ?>" style="width: 90px;"> 
+        <?php } ?>
+      </p>
+
+      <?php 
+      if ($result['country']=='Armenia') {
+       ?>
+       <div class="alert alert-info" id="alert">
+          <strong><?= _ERRORCNTRY; ?> </strong> <br><?= _ERRORCITYTEXT; ?>
+        </div>
+     <?php exit; } ?>
+      <?php if (in_array($ip, ip_list())) { ?>
+          <div class="alert alert-danger" id="alert">
+          <strong>Diqqət </strong> <br>Sizin IP adresiniz bloklanıb
+        </div>
+     <?php exit; } ?>
+      <form method="post">
+      	<?php 
+      		if(isset($_POST['ok'])) {
+      			$login = mysqli_real_escape_string($baglan,$_POST['login']);
+      			$pass  = mysqli_real_escape_string($baglan,$_POST['password']);
+            $pass  = hash('sha256', $pass);
+            if (empty($login) || empty($pass)) {
+               echo '
+                  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+                  <link rel="stylesheet" href="'.$url.'assets/css/sweetalert.css">
+                  <script src="'.$url.'assets/js/sweetalert.min.js"></script>
+                  <script>
+                  $(document).ready(function() {
+                  swal({
+                     title: "'._ERROR.'",
+                     text: "'._EMPTY.'",
+                     confirmButtonColor: "#FE2E2E",
+                     confirmButtonText: "'._CLOSE.'",
+                     type: "error",
+                  }, function(isConfirm) {
+                  });
+                  });
+                  </script>';      
+            }	
+      			else {
+      				$sql = "SELECT * FROM `users` WHERE BINARY (`login`= '".$login."' OR `email`= '".$login."') AND `password`= '".$pass."'";
+              $run = mysqli_query($baglan,$sql);
+              $shw = mysqli_fetch_array($run);
+              $say = mysqli_num_rows($run);
+              if ($say!=0) {
+                if ($shw['status']==0) {
+                    echo '
+                        <div class="alert alert-info" id="alert">
+                          <button type="button" class="close" data-dismiss="alert">x</button>
+                          <strong>'._SAYIN.' '.$shw['name'].' '.$shw['surname'].' . </strong> <br>'._DISABLE.'
+                        </div>
+                        ';
+                }
+               elseif(settings('system_status')==0 AND $shw['user_type']!=1){ 
+                echo '  <div class="alert alert-warning" id="alert">
+                  <strong>Diqqət </strong> <br> '.settings('system_closed_text').'
+                </div>';
+                } 
+                else{
+                  session_start();
+                  $_SESSION['user_id']      = $shw['user_id'];
+                  $_SESSION['user_login']   = $shw['login'];
+                  $_SESSION['user_type']    = $shw['user_type'];
+                  $_SESSION['lang']    = (empty($_GET['lang'])) ? 'az' : $_GET['lang'];
+                  $upd      = "UPDATE users SET last_logged= '".$now."' WHERE user_id='".$_SESSION['user_id']."'";
+                  $r_update = mysqli_query($baglan,$upd);
+                  
+                    echo '
+                        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+                        <link rel="stylesheet" href="'.$url.'assets/css/sweetalert.css">
+                        <script type="text/javascript"  src="'.$url.'assets/js/sweetalert.min.js"></script>
+                        <script>
+                        $(document).ready(function() {
+                        swal({
+                           title: "Uğurlu",
+                           text: "'._SAYIN.' '.$shw['name'].' '.$shw['surname'].' '.mb_strtolower(_WELCOME,'UTF-8').'.",
+                           type: "success",
+                           showCancelButton: false,
+                           showConfirmButton: false,
+                        }, function(isConfirm) {
+                        });
+                        });
+                        </script>'; 
+                    header("Refresh:2; url=".$url."".$_SESSION['lang']."/home");
+
+                }
+              }
+             
+      			
+      			 else{
+                echo '
+                  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+                  <link rel="stylesheet" href="'.$url.'assets/css/sweetalert.css">
+                  <script src="'.$url.'assets/js/sweetalert.min.js"></script>
+                  <script>
+                  $(document).ready(function() {
+                  swal({
+                     title: "'._ERROR.'",
+                     text: "'._NOTFOUND.'",
+                     confirmButtonColor: "#FE2E2E",
+                     confirmButtonText: "'._CLOSE.'",
+                     type: "error",
+                  }, function(isConfirm) {
+                  });
+                  });
+                  </script>';  
+                }
+              }
+          }
+        
+      	 ?>
+        <div class="input-group mb-3">
+          <input type="text" name="login" class="form-control" placeholder="<?=_USERNAME;?>">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-user"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" name="password" class="form-control" placeholder="<?=_PASSWORD;?>">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="float-center">
+            <button type="submit" name="ok" class="btn btn-primary btn-block btn-flat"><?=_ENTER; ?></button>
+        </div>
+        
+      </form>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("#alert").hide();
+    $("#alert").fadeTo(2000, 500).slideUp(500, function() {
+      $("#alert").slideUp(500);
+    });
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="<?= $url; ?>assets/js/jquery.backstretch.min.js"></script>
+<script type="text/javascript">
+  
+  (function($) {
+  'use strict';
+  $(document).ready(function () {
+    $.backstretch([
+      <?php if (date("dm")=="0803") { ?>
+      base_url + "assets/img/background/8mart.jpg",
+      <?php }elseif (date("dm")=="0911") { ?>
+      base_url + "assets/img/background/bayraqgunu.jpg",
+      <?php }elseif (date("dm")=="2001") { ?>
+      base_url + "assets/img/background/20yanvar.jpg",
+      <?php }else{ ?>
+      base_url + "assets/img/background/back.jpg",
+      base_url + "assets/img/background/back1.jpg",
+      base_url + "assets/img/background/back2.jpg",
+      base_url + "assets/img/background/back3.jpg",
+      base_url + "assets/img/background/back4.jpg",
+      base_url + "assets/img/background/back5.jpg",
+      base_url + "assets/img/background/back6.jpg",
+      <?php } ?>
+    ],{duration: 3000, fade: 750});
+  });
+})(jQuery);
+
+</script>
